@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turfe</title>
+    <link rel="stylesheet" href="turfe.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kanit:wght@200&family=Syne+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="total">
+    <div id="parte1">
+        <h1>Turfe</h1>
+        Insira a quantidade de cavalos: <input type="number" id="ipt_qtdCavalos"><br>
+        Insira a quantidade de voltas: <input type="number" id="ipt_qtdVoltas"><br>
+        <button onclick="iniciar()">Iniciar</button>
+    </div>
+    <div id="parte2" style="display: none;">
+        <h1>Turfe</h1>
+        <span id="texto">Insira os nomes dos cavalos: <input type="text" id="ipt_nome"></span>
+        <button onclick="receberNomes()" id="receber">Inserir</button>
+        <button onclick="iniciarCorrida()" style="display: none;" id="iniciarID">Iniciar Corrida</button>
+    </div>
+
+    <div style="display: none;" id="parte3">
+        <h1>Turfe</h1>
+        <div id="div_resul"></div>
+        <div id="div_msg" ></div>
+        <button id="darvolta" onclick="volta()">Dar volta</button>
+    </div>
+</div>
+
+</body>
+</html>
+<script>
+    var vt_cavalos = []
+    var qtdVoltas = 0
+    var qtdCavalos = 0
+    var contVolta = 0
+    var nomeprimeiro = ``
+    var nomesegundo = ``
+    var nometerceiro = ``
+    var primeiro = 999
+    var segundo = 999
+    var terceiro = 999
+
+    function iniciar() {
+        qtdCavalos = Number(ipt_qtdCavalos.value)
+        qtdVoltas = Number(ipt_qtdVoltas.value)
+        isValid = true
+        if (qtdCavalos < 3) {
+            alert('Adicione pelo três cavalos')
+            isValid = false
+        }
+        if (qtdVoltas < 1) {
+            alert('Adicione pelo menos uma volta')
+            isValid = false
+        }
+        if (isValid) {
+            parte1.style.display = 'none'
+            parte2.style.display = 'flex'
+        }
+    }
+
+    function receberNomes() {
+        var nome = ipt_nome.value
+        isValid = true
+        if (ipt_nome.value.length == 0) {
+            alert('Insira um nome correto')
+            isValid = false
+        }
+        for (let index = 0; index < vt_cavalos.length; index++) {
+                if (vt_cavalos[index].nomeCavalo == ipt_nome.value) {
+                    isValid = false
+                    alert(`Você já registrou um cavalo com esse nome`)
+                    break
+                }
+                
+            }
+        if (isValid) {
+            
+        
+        if (vt_cavalos.length < qtdCavalos) {
+            vt_cavalos.push({nomeCavalo: `${nome}`,
+                             tempoVolta: 0,
+                             tempoTotal: 0})
+        }
+    
+        if (vt_cavalos.length == qtdCavalos) {
+            receber.style.display = 'none'
+            iniciarID.style.display = 'block'
+            texto.style.display = `none`
+        }
+    }
+        ipt_nome.value = ''
+        
+    }
+    
+    function iniciarCorrida() {
+        parte2.style.display = `none`
+        parte3.style.display = `flex`
+    }
+    
+    function volta() {
+        div_resul.innerHTML = ``
+        if (contVolta < qtdVoltas) {
+            for (let index = 0; index < vt_cavalos.length; index++) {
+                vt_cavalos[index].tempoVolta = (Math.random()*2+7).toFixed(1)
+                vt_cavalos[index].tempoTotal += Number(vt_cavalos[index].tempoVolta)           
+            }
+            
+        contVolta++
+        div_resul.innerHTML += `<b>Volta ${contVolta}</b> <br>`
+
+        for (let index = 0; index < vt_cavalos.length; index++) {
+            div_resul.innerHTML += `${vt_cavalos[index].nomeCavalo} volta atual: ${vt_cavalos[index].tempoVolta} tempo total: ${(vt_cavalos[index].tempoTotal).toFixed(1)} <br>`;
+        }
+        }
+        if (contVolta == qtdVoltas) {
+            darvolta.style.display = `none`
+            for (let index = 0; index < vt_cavalos.length; index++) {
+                if (vt_cavalos[index].tempoTotal < primeiro) {
+                    primeiro = Number(vt_cavalos[index].tempoTotal)
+                    nomeprimeiro = vt_cavalos[index].nomeCavalo
+                }
+            }
+            for (let index = 0; index < vt_cavalos.length; index++) {
+                if (vt_cavalos[index].tempoTotal > primeiro && vt_cavalos[index].tempoTotal < segundo) {
+                    segundo = Number(vt_cavalos[index].tempoTotal)
+                    nomesegundo = vt_cavalos[index].nomeCavalo
+                }
+                
+            }
+            for (let index = 0; index < vt_cavalos.length; index++) {
+                if (vt_cavalos[index].tempoTotal > segundo && vt_cavalos[index].tempoTotal < terceiro) {
+                    terceiro = Number(vt_cavalos[index].tempoTotal)
+                    nometerceiro = vt_cavalos[index].nomeCavalo
+                }
+            }
+            div_resul.innerHTML = ``
+            div_msg.innerHTML += `<br>1 Colocado - ${nomeprimeiro} com o tempo de ${primeiro.toFixed(2)}`
+            div_msg.innerHTML += `<br>2 Colocado - ${nomesegundo} com o tempo de ${segundo.toFixed(2)}`
+            div_msg.innerHTML += `<br>3 Colocado - ${nometerceiro} com o tempo de ${terceiro.toFixed(2)}`
+    }
+        
+}
+</script>
